@@ -49,7 +49,7 @@ export async function summarizeText(text: string): Promise<SummaryResult> {
   return {
     thesis: parsed.thesis || "No thesis extracted.",
     bullets: Array.isArray(parsed.bullets)
-      ? parsed.bullets.slice(0, 3)
+      ? parsed.bullets.slice(0, 5)
       : ["Summary generation failed."],
   };
 }
