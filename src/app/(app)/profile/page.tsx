@@ -11,15 +11,12 @@ interface AccountStats {
 }
 
 export default function ProfilePage() {
-  const { user, updateDisplayName, resetPassword, deleteAccount, signOut } =
-    useAuth();
+  const { user, updateDisplayName, resetPassword, deleteAccount } = useAuth();
   const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState("");
   const [stats, setStats] = useState<AccountStats | null>(null);
-
-  // Feedback states
   const [nameStatus, setNameStatus] = useState("");
   const [resetStatus, setResetStatus] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -27,18 +24,15 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!user) return;
-    // Fetch stats
     const fetchStats = async () => {
       try {
         const idToken = await user.getIdToken();
         const res = await fetch("/api/account/stats", {
           headers: { Authorization: `Bearer ${idToken}` },
         });
-        if (res.ok) {
-          setStats(await res.json());
-        }
+        if (res.ok) setStats(await res.json());
       } catch {
-        // Stats are non-critical
+        // non-critical
       }
     };
     fetchStats();
@@ -48,21 +42,21 @@ export default function ProfilePage() {
     if (!newName.trim()) return;
     try {
       await updateDisplayName(newName.trim());
-      setNameStatus("UPDATED");
+      setNameStatus("Updated");
       setIsEditing(false);
       setTimeout(() => setNameStatus(""), 3000);
     } catch {
-      setNameStatus("UPDATE FAILED");
+      setNameStatus("Failed");
     }
   };
 
   const handleResetPassword = async () => {
     try {
       await resetPassword();
-      setResetStatus("RESET LINK SENT");
+      setResetStatus("Reset link sent");
       setTimeout(() => setResetStatus(""), 5000);
     } catch {
-      setResetStatus("FAILED TO SEND RESET LINK");
+      setResetStatus("Failed to send");
     }
   };
 
@@ -83,90 +77,69 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const initial = (
-    user.displayName?.[0] ||
-    user.email?.[0] ||
-    "?"
-  ).toUpperCase();
+  const initial = (user.displayName?.[0] || user.email?.[0] || "?").toUpperCase();
 
   return (
-    <div className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-6 py-8">
-      {/* Page Header */}
+    <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto px-8 py-10">
+      {/* Header */}
       <div className="mb-10">
         <button
           onClick={() => router.push("/dashboard")}
-          className="vapor-label text-[#5f3f3b] hover:text-[#af8782] mb-4 block cursor-pointer"
+          className="text-xs text-[#48474a] hover:text-[#adaaad] mb-4 block cursor-pointer transition-colors ease-premium duration-300"
         >
-          ← BACK TO FEED
+          ← Back to archive
         </button>
-        <h1 className="vapor-display text-[#e5e2e1]">PROFILE</h1>
+        <h1 className="text-3xl font-extrabold text-[#f9f5f8] tracking-tight">Settings</h1>
       </div>
 
-      {/* Identity Section */}
-      <section className="border-b border-[#5f3f3b] pb-8 mb-8">
-        <div className="flex items-center gap-6">
-          {/* Avatar */}
-          <div className="w-16 h-16 bg-[#2a2a2a] border border-[#5f3f3b] flex items-center justify-center shrink-0">
-            <span className="text-2xl font-bold text-[#e5e2e1]">{initial}</span>
+      {/* Identity */}
+      <section className="pb-8 mb-8" style={{ borderBottom: '1px solid rgba(72, 71, 74, 0.15)' }}>
+        <div className="flex items-center gap-5">
+          <div className="w-14 h-14 bg-[#5e2c91] rounded-xl flex items-center justify-center shrink-0">
+            <span className="text-xl font-bold text-[#e3c4ff]">{initial}</span>
           </div>
-
-          {/* Info */}
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-bold uppercase tracking-[0.05em] text-[#e5e2e1] truncate">
-              {user.displayName || "UNNAMED USER"}
+            <h2 className="text-lg font-bold text-[#f9f5f8] truncate tracking-tight">
+              {user.displayName || "Unnamed"}
             </h2>
-            <p className="vapor-label text-[#af8782] mt-1 truncate">
-              {user.email || "NO EMAIL"}
-            </p>
+            <p className="text-sm text-[#adaaad] mt-0.5 truncate">{user.email}</p>
           </div>
-
-          {/* Edit trigger */}
           {!isEditing && (
             <button
-              onClick={() => {
-                setNewName(user.displayName || "");
-                setIsEditing(true);
-              }}
-              className="vapor-label text-[#ffb4aa] hover:text-[#e5e2e1] cursor-pointer shrink-0"
+              onClick={() => { setNewName(user.displayName || ""); setIsEditing(true); }}
+              className="text-xs text-[#ba9eff] hover:text-[#e3c4ff] cursor-pointer transition-colors ease-premium duration-300"
             >
-              EDIT
+              Edit
             </button>
           )}
         </div>
 
-        {/* Edit Name Form */}
         {isEditing && (
-          <div className="mt-6 space-y-3">
+          <div className="mt-5 space-y-3">
             <input
               type="text"
-              placeholder="DISPLAY NAME"
+              placeholder="Display name"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="w-full h-10 px-4 bg-transparent border border-[#5f3f3b] text-[#e5e2e1] font-mono text-sm placeholder:text-[#5f3f3b] focus:border-[#ffb4aa] focus:outline-none uppercase tracking-wider"
+              className="w-full h-10 px-4 bg-[#262528] rounded-xl text-[#f9f5f8] text-sm placeholder:text-[#48474a] focus:outline-none focus:ring-1 focus:ring-[#ba9eff]/40 transition-all ease-premium duration-300"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 onClick={handleUpdateName}
-                className="h-9 px-5 bg-[#e5e2e1] text-[#131313] font-mono text-[0.6875rem] uppercase tracking-[0.1em] hover:bg-[#ffb4aa] cursor-pointer"
+                className="h-9 px-4 gradient-primary text-black text-xs font-bold rounded-md hover:scale-105 cursor-pointer transition-transform ease-premium duration-300"
               >
-                UPDATE
+                Update
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="h-9 px-5 border border-[#e5e2e1] bg-transparent text-[#e5e2e1] font-mono text-[0.6875rem] uppercase tracking-[0.1em] hover:bg-[#e5e2e1] hover:text-[#131313] cursor-pointer"
+                className="h-9 px-4 bg-[#19191c] text-[#f9f5f8] text-xs rounded-md hover:bg-[#1f1f22] cursor-pointer transition-colors ease-premium duration-300"
               >
-                CANCEL
+                Cancel
               </button>
             </div>
             {nameStatus && (
-              <p
-                className={`vapor-label ${
-                  nameStatus === "UPDATED"
-                    ? "text-[#ffb4aa]"
-                    : "text-[#ff2222]"
-                }`}
-              >
+              <p className={`text-xs ${nameStatus === "Updated" ? "text-emerald-400" : "text-red-400"}`}>
                 {nameStatus}
               </p>
             )}
@@ -174,96 +147,72 @@ export default function ProfilePage() {
         )}
       </section>
 
-      {/* Statistics */}
+      {/* Stats */}
       <section className="mb-8">
-        <h3 className="vapor-headline text-[#e5e2e1] mb-4">STATISTICS</h3>
-        <div className="grid grid-cols-3 gap-2">
-          <div className="border border-[#5f3f3b] bg-[#131313] p-5">
-            <p className="text-2xl font-bold text-[#e5e2e1] font-mono">
-              {stats?.totalItems ?? "—"}
-            </p>
-            <p className="vapor-label text-[#af8782] mt-2">ITEMS SAVED</p>
-          </div>
-          <div className="border border-[#5f3f3b] bg-[#131313] p-5">
-            <p className="text-2xl font-bold text-[#e5e2e1] font-mono">
-              {stats?.expiredItems ?? "—"}
-            </p>
-            <p className="vapor-label text-[#af8782] mt-2">ITEMS EXPIRED</p>
-          </div>
-          <div className="border border-[#5f3f3b] bg-[#131313] p-5">
-            <p className="text-2xl font-bold text-[#e5e2e1] font-mono">
-              {stats?.daysActive ?? "—"}
-            </p>
-            <p className="vapor-label text-[#af8782] mt-2">DAYS ACTIVE</p>
-          </div>
+        <span className="text-xs text-[#adaaad] tracking-widest uppercase font-medium block mb-4">Statistics</span>
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { value: stats?.totalItems, label: "Saved" },
+            { value: stats?.expiredItems, label: "Expired" },
+            { value: stats?.daysActive, label: "Days active" },
+          ].map(({ value, label }) => (
+            <div key={label} className="bg-[#19191c] rounded-xl p-5">
+              <p className="text-2xl font-bold text-[#f9f5f8] tabular-nums">{value ?? "—"}</p>
+              <p className="text-xs text-[#adaaad] mt-1">{label}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Security */}
-      <section className="border-b border-[#5f3f3b] pb-8 mb-8">
-        <h3 className="vapor-headline text-[#e5e2e1] mb-4">SECURITY</h3>
+      <section className="pb-8 mb-8" style={{ borderBottom: '1px solid rgba(72, 71, 74, 0.15)' }}>
+        <span className="text-xs text-[#adaaad] tracking-widest uppercase font-medium block mb-4">Security</span>
         <button
           onClick={handleResetPassword}
-          className="h-9 px-5 border border-[#e5e2e1] bg-transparent text-[#e5e2e1] font-mono text-[0.6875rem] uppercase tracking-[0.1em] hover:bg-[#e5e2e1] hover:text-[#131313] cursor-pointer"
+          className="h-9 px-4 bg-[#19191c] text-[#f9f5f8] text-xs rounded-md hover:bg-[#1f1f22] cursor-pointer transition-colors ease-premium duration-300"
         >
-          RESET PASSWORD
+          Reset Password
         </button>
-        {resetStatus ? (
-          <p
-            className={`vapor-label mt-3 ${
-              resetStatus.includes("SENT")
-                ? "text-[#ffb4aa]"
-                : "text-[#ff2222]"
-            }`}
-          >
-            {resetStatus}
-          </p>
-        ) : (
-          <p className="vapor-label text-[#5f3f3b] mt-3">
-            A PASSWORD RESET LINK WILL BE SENT TO YOUR EMAIL
-          </p>
-        )}
+        <p className={`text-xs mt-3 ${resetStatus.includes("sent") ? "text-emerald-400" : resetStatus ? "text-red-400" : "text-[#48474a]"}`}>
+          {resetStatus || "A reset link will be sent to your email"}
+        </p>
       </section>
 
-      {/* Danger Zone */}
-      <section className="border border-[#ff2222]/50 bg-[#131313] p-6">
-        <h3 className="vapor-headline text-[#ff2222] mb-2">DANGER ZONE</h3>
-        <p className="vapor-body text-[#af8782] mb-6">
-          THIS ACTION IS PERMANENT. ALL YOUR DATA WILL BE DESTROYED. EVERY
-          SAVED ITEM, EVERY TRACE — GONE.
+      {/* Danger */}
+      <section className="bg-[#19191c] rounded-xl p-6">
+        <span className="text-xs text-red-400 tracking-widest uppercase font-bold block mb-2">Danger zone</span>
+        <p className="text-sm text-[#adaaad] mb-5 leading-relaxed">
+          Permanently delete your account and all saved data. This cannot be undone.
         </p>
         {deleteConfirm ? (
           <div className="space-y-3">
-            <p className="vapor-label text-[#ff2222] vapor-urgent-pulse">
-              ARE YOU SURE? THERE IS NO GOING BACK.
-            </p>
+            <p className="text-xs text-red-400">Are you sure? This is irreversible.</p>
             <div className="flex gap-2">
               <button
                 onClick={handleDeleteAccount}
                 disabled={isDeleting}
-                className="h-9 px-5 bg-[#ff2222] text-[#0e0e0e] font-mono text-[0.6875rem] uppercase tracking-[0.1em] font-bold hover:bg-[#ff4444] disabled:opacity-50 cursor-pointer"
+                className="h-9 px-4 bg-red-600 text-white text-xs font-bold rounded-md hover:bg-red-500 disabled:opacity-50 cursor-pointer transition-all ease-premium duration-300"
               >
-                {isDeleting ? "DESTROYING..." : "YES, DELETE EVERYTHING"}
+                {isDeleting ? "Deleting..." : "Yes, delete everything"}
               </button>
               <button
                 onClick={() => setDeleteConfirm(false)}
-                className="h-9 px-5 border border-[#e5e2e1] bg-transparent text-[#e5e2e1] font-mono text-[0.6875rem] uppercase tracking-[0.1em] hover:bg-[#e5e2e1] hover:text-[#131313] cursor-pointer"
+                className="h-9 px-4 bg-[#262528] text-[#f9f5f8] text-xs rounded-md hover:bg-[#2a282e] cursor-pointer transition-colors ease-premium duration-300"
               >
-                CANCEL
+                Cancel
               </button>
             </div>
           </div>
         ) : (
           <button
             onClick={handleDeleteAccount}
-            className="h-9 px-5 bg-[#ff2222] text-[#0e0e0e] font-mono text-[0.6875rem] uppercase tracking-[0.1em] font-bold hover:bg-[#ff4444] cursor-pointer"
+            className="h-9 px-4 bg-red-600/10 text-red-400 text-xs font-bold rounded-md hover:bg-red-600/20 cursor-pointer transition-colors ease-premium duration-300"
           >
-            DELETE MY ACCOUNT
+            Delete my account
           </button>
         )}
       </section>
 
-      {/* Bottom spacer */}
       <div className="h-16" />
     </div>
   );

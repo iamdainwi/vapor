@@ -2,7 +2,7 @@
 
 Vapor is an anti-hoarding "read-it-later" application designed to combat digital clutter. Unlike traditional bookmarking tools that allow content to accumulate indefinitely, Vapor enforces consumption through a strict 7-day self-destruct mechanic.
 
-The interface is built with a **brutalist-minimal** aesthetic—raw, utilitarian, and high-contrast—reflecting the ephemeral nature of the content it contains.
+The interface is built with a **minimalist premium** aesthetic—raw, utilitarian, and high-contrast—reflecting the ephemeral nature of the content it contains.
 
 ---
 
@@ -17,7 +17,7 @@ The interface is built with a **brutalist-minimal** aesthetic—raw, utilitarian
 ## Tech Stack
 
 - **Frontend**: Next.js 16 (App Router, Server Components)
-- **Styling**: Tailwind CSS v4 (Custom Brutalist Theme)
+- **Styling**: Tailwind CSS v4 (Custom Minimalist Premium Theme)
 - **UI Components**: shadcn/ui (Radix Mira style)
 - **Authentication**: Firebase Auth (Google OAuth & Email/Password)
 - **Database**: Firebase Firestore (NoSQL)

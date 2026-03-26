@@ -19,6 +19,17 @@ interface ContentCardProps {
   item: ContentItem;
 }
 
+/** Extracts a pseudo-category from the URL domain */
+function getCategory(url: string): string {
+  try {
+    const host = new URL(url).hostname.replace("www.", "");
+    const parts = host.split(".");
+    return parts[0].toUpperCase();
+  } catch {
+    return "ARTICLE";
+  }
+}
+
 export function ContentCard({ item }: ContentCardProps) {
   const { user } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -37,26 +48,29 @@ export function ContentCard({ item }: ContentCardProps) {
         body: JSON.stringify({ itemId: item.id }),
       });
     } catch {
-      // Item will be removed from real-time listener anyway
+      // handled by listener
     } finally {
       setIsDeleting(false);
     }
   };
 
+  const category = getCategory(item.originalUrl);
+
   // Processing state
   if (item.status === "processing") {
     return (
-      <article className="border border-[#5f3f3b] bg-[#131313] p-6 hover:border-[#ffb4aa]">
-        <div className="flex items-center justify-between mb-3">
-          <span className="vapor-label text-[#af8782]">PROCESSING...</span>
-          <CountdownTimer expiresAt={item.expiresAt} />
+      <article className="bg-[#19191c] rounded-xl p-6 transition-all ease-premium duration-300">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs text-[#ba9eff] font-bold tracking-widest uppercase">{category}</span>
+          <span className="text-xs text-[#48474a] tracking-widest uppercase">Processing...</span>
         </div>
-        <p className="vapor-label text-[#5f3f3b] truncate">{item.originalUrl}</p>
-        <div className="mt-4 space-y-2">
-          <div className="h-4 bg-[#201f1f] w-3/4" />
-          <div className="h-3 bg-[#201f1f] w-full" />
-          <div className="h-3 bg-[#201f1f] w-5/6" />
-          <div className="h-3 bg-[#201f1f] w-2/3" />
+        <div className="space-y-3">
+          <div className="h-5 bg-[#262528] rounded-lg w-3/4 animate-pulse" />
+          <div className="h-3.5 bg-[#1f1f22] rounded-lg w-full animate-pulse delay-75" />
+          <div className="h-3.5 bg-[#1f1f22] rounded-lg w-5/6 animate-pulse delay-150" />
+        </div>
+        <div className="mt-5">
+          <CountdownTimer expiresAt={item.expiresAt} />
         </div>
       </article>
     );
@@ -65,60 +79,65 @@ export function ContentCard({ item }: ContentCardProps) {
   // Failed state
   if (item.status === "failed") {
     return (
-      <article className="border border-[#ff2222]/30 bg-[#131313] p-6">
-        <div className="flex items-center justify-between mb-3">
-          <span className="vapor-label text-[#ff2222]">EXTRACTION FAILED</span>
+      <article className="bg-[#19191c] rounded-xl p-6">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-red-400 font-bold tracking-widest uppercase">Failed</span>
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className="vapor-label text-[#ff2222] hover:text-[#e5e2e1] cursor-pointer disabled:opacity-50"
+            className="text-xs text-[#48474a] hover:text-red-400 cursor-pointer transition-colors ease-premium duration-300"
           >
-            {isDeleting ? "..." : "DELETE"}
+            {isDeleting ? "..." : "Remove"}
           </button>
         </div>
-        <p className="vapor-label text-[#5f3f3b] truncate">{item.originalUrl}</p>
+        <p className="text-xs text-[#48474a] truncate">{item.originalUrl}</p>
       </article>
     );
   }
 
+  const thesis = item.summary[0] || "";
+
   return (
-    <article className="border border-[#5f3f3b] bg-[#131313] p-6 hover:border-[#ffb4aa] group">
-      {/* Title */}
-      <h2 className="text-sm font-bold uppercase tracking-[0.05em] text-[#e5e2e1] mb-1 leading-snug">
-        {item.title || "UNTITLED"}
-      </h2>
-
-      {/* URL */}
-      <a
-        href={item.originalUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="vapor-label text-[#5f3f3b] hover:text-[#af8782] block truncate mb-4"
-      >
-        {item.originalUrl}
-      </a>
-
-      {/* Summary bullets */}
-      <div className="space-y-2 mb-6">
-        {item.summary.map((bullet, i) => (
-          <p key={i} className="vapor-body text-[#af8782] pl-4">
-            <span className="text-[#5f3f3b] mr-2">—</span>
-            {bullet}
-          </p>
-        ))}
+    <article className="bg-[#19191c] rounded-xl p-6 hover:scale-[1.02] transition-transform ease-premium duration-300 flex flex-col">
+      {/* Category + remaining */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs text-[#ba9eff] font-bold tracking-widest uppercase">{category}</span>
+        <CountdownTimer expiresAt={item.expiresAt} variant="text" />
       </div>
 
-      {/* Bottom row: countdown + delete */}
-      <div className="flex items-center justify-between pt-4 border-t border-[#5f3f3b]/50">
-        <CountdownTimer expiresAt={item.expiresAt} />
+      {/* Title */}
+      <h3 className="text-lg font-bold text-[#f9f5f8] tracking-tight leading-snug mb-3">
+        {item.title || "Untitled"}
+      </h3>
+
+      {/* Summary */}
+      {thesis && (
+        <p className="text-sm text-[#adaaad] leading-relaxed mb-6 line-clamp-3">
+          {thesis}
+        </p>
+      )}
+
+      {/* Action row */}
+      <div className="flex items-center gap-3 mt-auto mb-4">
+        <a
+          href={item.originalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-9 px-5 gradient-primary text-black text-xs font-bold rounded-md hover:scale-105 cursor-pointer transition-transform ease-premium duration-300 inline-flex items-center"
+        >
+          Read Now
+        </a>
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className="vapor-label text-[#ff2222] hover:text-[#e5e2e1] cursor-pointer disabled:opacity-50"
+          className="text-sm text-[#adaaad] hover:text-red-400 cursor-pointer transition-colors ease-premium duration-300"
         >
-          {isDeleting ? "..." : "DELETE"}
+          {isDeleting ? "..." : "Remove"}
         </button>
       </div>
+
+      {/* Decay bar */}
+      <CountdownTimer expiresAt={item.expiresAt} variant="bar" />
     </article>
   );
 }

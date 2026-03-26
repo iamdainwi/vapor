@@ -13,7 +13,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if already logged in
   if (!loading && user) {
     router.push("/dashboard");
     return null;
@@ -24,9 +23,9 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       await signInWithEmail(email, password);
-      router.push("/");
+      router.push("/dashboard");
     } catch {
-      setError("INVALID CREDENTIALS");
+      setError("Invalid credentials");
     } finally {
       setIsSubmitting(false);
     }
@@ -37,9 +36,9 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       await signUpWithEmail(email, password);
-      router.push("/");
+      router.push("/dashboard");
     } catch {
-      setError("ACCOUNT CREATION FAILED");
+      setError("Account creation failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -51,86 +50,85 @@ export default function LoginPage() {
       await signInWithGoogle();
       router.push("/dashboard");
     } catch {
-      setError("GOOGLE SIGN-IN FAILED");
+      setError("Google sign-in failed");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[#0e0e0e]">
-        <span className="vapor-label text-[#af8782]">LOADING...</span>
+      <div className="flex-1 flex items-center justify-center bg-[#0e0e10]">
+        <div className="w-5 h-5 border-2 border-[#ba9eff]/30 border-t-[#ba9eff] rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 bg-[#0e0e0e]">
-      <div className="w-full max-w-md space-y-12">
+    <div className="flex-1 flex flex-col items-center justify-center px-6 bg-[#0e0e10]">
+      <div className="w-full max-w-sm space-y-8">
         {/* Header */}
-        <div className="text-left">
-          <h1 className="vapor-display text-[#e5e2e1] mb-4">VAPOR</h1>
-          <p className="vapor-label text-[#af8782]">
-            NOTHING LASTS. READ IT NOW OR LOSE IT FOREVER.
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-[#ba9eff] tracking-tight italic mb-2">
+            VAPOR
+          </h1>
+          <p className="text-sm text-[#adaaad]">
+            Read it now or lose it forever.
           </p>
         </div>
 
-        {/* Google Auth */}
+        {/* Google */}
         <button
           onClick={handleGoogleSignIn}
-          className="w-full h-12 border border-[#e5e2e1] bg-transparent text-[#e5e2e1] font-mono text-xs uppercase tracking-[0.1em] hover:bg-[#e5e2e1] hover:text-[#131313] cursor-pointer"
+          className="w-full h-11 bg-[#19191c] text-[#f9f5f8] text-sm rounded-xl hover:bg-[#1f1f22] hover:scale-[1.02] cursor-pointer transition-all ease-premium duration-300"
         >
-          SIGN IN WITH GOOGLE
+          Continue with Google
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-4">
-          <div className="flex-1 h-px bg-[#5f3f3b]" />
-          <span className="vapor-label text-[#5f3f3b]">OR</span>
-          <div className="flex-1 h-px bg-[#5f3f3b]" />
+          <div className="flex-1 h-px bg-[#19191c]" />
+          <span className="text-xs text-[#48474a]">or</span>
+          <div className="flex-1 h-px bg-[#19191c]" />
         </div>
 
-        {/* Email/Password */}
-        <div className="space-y-4">
+        {/* Email form */}
+        <div className="space-y-3">
           <input
             type="email"
-            placeholder="YOUR@EMAIL.COM"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-12 px-4 bg-transparent border border-[#5f3f3b] text-[#e5e2e1] font-mono text-sm placeholder:text-[#5f3f3b] focus:border-[#ffb4aa] focus:outline-none uppercase tracking-wider"
+            className="w-full h-11 px-4 bg-[#262528] rounded-xl text-[#f9f5f8] text-sm placeholder:text-[#48474a] focus:outline-none focus:ring-1 focus:ring-[#ba9eff]/40 transition-all ease-premium duration-300"
           />
           <input
             type="password"
-            placeholder="PASSWORD"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full h-12 px-4 bg-transparent border border-[#5f3f3b] text-[#e5e2e1] font-mono text-sm placeholder:text-[#5f3f3b] focus:border-[#ffb4aa] focus:outline-none uppercase tracking-wider"
+            className="w-full h-11 px-4 bg-[#262528] rounded-xl text-[#f9f5f8] text-sm placeholder:text-[#48474a] focus:outline-none focus:ring-1 focus:ring-[#ba9eff]/40 transition-all ease-premium duration-300"
           />
 
-          {error && (
-            <p className="vapor-label text-[#ff2222]">{error}</p>
-          )}
+          {error && <p className="text-xs text-red-400">{error}</p>}
 
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={handleEmailSignIn}
               disabled={isSubmitting}
-              className="flex-1 h-12 bg-[#e5e2e1] text-[#131313] font-mono text-xs uppercase tracking-[0.1em] hover:bg-[#ffb4aa] disabled:opacity-50 cursor-pointer"
+              className="flex-1 h-11 gradient-primary text-black text-sm font-semibold rounded-xl hover:scale-[1.02] disabled:opacity-40 cursor-pointer transition-all ease-premium duration-300"
             >
-              {isSubmitting ? "..." : "SIGN IN"}
+              {isSubmitting ? "..." : "Sign In"}
             </button>
             <button
               onClick={handleEmailSignUp}
               disabled={isSubmitting}
-              className="flex-1 h-12 border border-[#e5e2e1] bg-transparent text-[#e5e2e1] font-mono text-xs uppercase tracking-[0.1em] hover:bg-[#e5e2e1] hover:text-[#131313] disabled:opacity-50 cursor-pointer"
+              className="flex-1 h-11 bg-[#19191c] text-[#f9f5f8] text-sm rounded-xl hover:bg-[#1f1f22] hover:scale-[1.02] disabled:opacity-40 cursor-pointer transition-all ease-premium duration-300"
             >
-              CREATE ACCOUNT
+              Create Account
             </button>
           </div>
         </div>
 
-        {/* Footer warning */}
-        <p className="vapor-label text-[#ff2222] text-center vapor-urgent-pulse">
-          ITEMS SELF-DESTRUCT AFTER 7 DAYS
+        <p className="text-[11px] text-[#48474a] text-center tracking-wider uppercase">
+          Articles self-destruct after 7 days
         </p>
       </div>
     </div>

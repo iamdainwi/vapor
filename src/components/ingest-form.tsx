@@ -29,12 +29,12 @@ export function IngestForm() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "INGESTION FAILED");
+        throw new Error(data.error || "Ingestion failed");
       }
 
       setUrl("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "UNKNOWN ERROR");
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setIsSubmitting(false);
     }
@@ -42,25 +42,30 @@ export function IngestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <div className="flex gap-2">
+      <div className="flex gap-0 bg-[#19191c] rounded-xl overflow-hidden">
         <input
           type="url"
-          placeholder="PASTE A URL AND HIT ENTER"
+          placeholder="Paste article URL here..."
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           disabled={isSubmitting}
-          className="flex-1 h-12 px-4 bg-transparent border border-[#5f3f3b] text-[#e5e2e1] font-mono text-sm placeholder:text-[#5f3f3b] focus:border-[#ffb4aa] focus:outline-none uppercase tracking-wider disabled:opacity-50"
+          className="flex-1 h-12 px-5 bg-transparent text-[#f9f5f8] text-sm placeholder:text-[#48474a] focus:outline-none disabled:opacity-50"
           required
         />
         <button
           type="submit"
           disabled={isSubmitting || !url.trim()}
-          className="h-12 px-6 bg-[#e5e2e1] text-[#131313] font-mono text-xs uppercase tracking-[0.1em] hover:bg-[#ffb4aa] disabled:opacity-50 cursor-pointer shrink-0"
+          className="h-12 px-6 gradient-primary text-black text-sm font-semibold flex items-center gap-2 hover:scale-105 disabled:opacity-40 disabled:hover:scale-100 cursor-pointer shrink-0 transition-transform ease-premium duration-300"
         >
-          {isSubmitting ? "SAVING..." : "SAVE"}
+          {isSubmitting ? "Saving..." : "Summarize"}
+          {!isSubmitting && (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 5v14M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
         </button>
       </div>
-      {error && <p className="vapor-label text-[#ff2222]">{error}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
     </form>
   );
 }
