@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   });
 
   // Process in background (don't await — return immediately)
-  processUrl(docRef.id, url).catch(async () => {
+  await processUrl(docRef.id, url).catch(async () => {
     await db.collection("content_items").doc(docRef.id).update({
       status: "failed",
     });
