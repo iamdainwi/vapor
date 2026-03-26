@@ -3,6 +3,15 @@
 import { useAuth } from "@/components/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import Link from "next/link";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, loading, signOut } = useAuth();
@@ -36,11 +45,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             Vapor
           </span>
           <nav className="hidden sm:flex items-center gap-5">
-            <span className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300">Feed</span>
-            <span className="text-sm text-[#f9f5f8] font-medium cursor-pointer">Archive</span>
-            <span className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300"
+            <Link href="/dashboard" className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300">Feed</Link>
+            {/* <span className="text-sm text-[#f9f5f8] font-medium cursor-pointer">Archive</span> */}
+            {/* <span className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300"
               onClick={() => router.push("/profile")}
-            >Settings</span>
+            >Settings</span> */}
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -51,12 +60,36 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </svg>
             <span className="text-xs text-[#48474a]">Search archive...</span>
           </div>
-          <button
+          {/* <button
             onClick={signOut}
             className="w-8 h-8 rounded-full bg-[#5e2c91] flex items-center justify-center text-xs text-[#e3c4ff] font-bold cursor-pointer hover:scale-110 transition-transform ease-premium duration-300"
           >
             {(user.displayName?.[0] || user.email?.[0] || "?").toUpperCase()}
-          </button>
+          </button> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="w-8 h-8 rounded-full bg-[#5e2c91] flex items-center justify-center text-xs text-[#e3c4ff] font-bold cursor-pointer hover:scale-110 transition-transform ease-premium duration-300"
+              >
+                {(user.displayName?.[0] || user.email?.[0] || "?").toUpperCase()}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuItem>
+                  <span
+                    onClick={() => router.push("/profile")}
+                  >Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <span
+                    onClick={signOut}
+                  >Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 

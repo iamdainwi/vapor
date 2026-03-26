@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   title: "VAPOR — Nothing Lasts",
   description:
     "The anti-hoarding reader. No archives, no clutter. Just pure content that dissolves when you're done.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Vapor",
+  },
 };
 
 export default function RootLayout({
