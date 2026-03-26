@@ -44,7 +44,7 @@ export interface ScrapedContent {
 }
 
 export async function scrapeUrl(url: string): Promise<ScrapedContent> {
-  console.log(`[Axios Scraper] Attempting to extract: ${url}`);
+  // console.log(`[Axios Scraper] Attempting to extract: ${url}`);
   const targetUrl = `https://r.jina.ai/${url}`;
 
   try {

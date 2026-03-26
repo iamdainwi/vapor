@@ -66,14 +66,14 @@ async function processUrl(docId: string, url: string) {
   const { title, textContent } = await scrapeUrl(url);
 
   // Step 2: Summarize
-  const { thesis, bullets } = await summarizeText(textContent);
+  const { titleText, thesis, bullets } = await summarizeText(textContent);
 
   // Step 3: Update document
   await db
     .collection("content_items")
     .doc(docId)
     .update({
-      title,
+      title: titleText,
       summary: [thesis, ...bullets],
       status: "ready",
     });

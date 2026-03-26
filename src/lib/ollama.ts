@@ -1,6 +1,7 @@
 import { Ollama } from "ollama";
 
 export interface SummaryResult {
+  titleText: string;
   thesis: string;
   bullets: string[];
 }
@@ -9,7 +10,7 @@ const SYSTEM_PROMPT = `You are a brutal content summarizer for VAPOR, an ephemer
 
 RULES:
 - Return ONLY valid JSON. No markdown, no code fences, no explanation.
-- Format: {"thesis": "one sentence core argument", "bullets": ["point 1", "point 2", "point 3", "point 4", "point 5"]}
+- Format: {"thesis": "one sentence core argument", "bullets": ["point 1", "point 2", "point 3", "point 4", "point 5"], "title": "title"}
 - The thesis must be ONE sentence capturing the core argument or finding.
 - Exactly 5 bullets. Each bullet is one sentence max.
 - Be direct. No hedging. No "the article discusses..." — just state the facts.
@@ -29,7 +30,7 @@ const ollama = new Ollama({
  */
 export async function summarizeText(text: string): Promise<SummaryResult> {
   // Truncate to ~4000 chars to fit context window
-  const truncated = text.slice(0, 10000);
+  // const truncated = text.slice(0, 10000);
 
   const response = await ollama.chat({
     model: "gpt-oss:120b-cloud",
@@ -37,16 +38,17 @@ export async function summarizeText(text: string): Promise<SummaryResult> {
       { role: "system", content: SYSTEM_PROMPT },
       {
         role: "user",
-        content: `Summarize the following article content:\n\n${truncated}`,
+        content: `Summarize the following article content:\n\n${text}`,
       },
     ],
     stream: false,
     format: "json",
   });
-
+  // console.log(response);
   const parsed = JSON.parse(response.message.content);
-
+  // console.log(parsed);
   return {
+    titleText: parsed.title,
     thesis: parsed.thesis || "No thesis extracted.",
     bullets: Array.isArray(parsed.bullets)
       ? parsed.bullets.slice(0, 5)
