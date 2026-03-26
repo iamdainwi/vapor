@@ -1,3 +1,4 @@
+"use server";
 import { Ollama } from "ollama";
 
 export interface SummaryResult {
