@@ -1,113 +1,114 @@
-# VAPOR // NOTHING LASTS
+# Vapor: The Ephemeral Lens
 
-Vapor is an anti-hoarding "read-it-later" application designed to combat digital clutter. Unlike traditional bookmarking tools that allow content to accumulate indefinitely, Vapor enforces consumption through a strict 7-day self-destruct mechanic.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The interface is built with a **minimalist premium** aesthetic—raw, utilitarian, and high-contrast—reflecting the ephemeral nature of the content it contains.
+> **"Nothing Lasts. Focus on what matters. Let the rest evaporate."**
 
----
+Vapor is an intentional, anti-hoarding reader designed for the age of information overload. It turns your "reading graveyard" of bookmarked articles into a living, breathing **Feed** where knowledge has a half-life. 
 
-## Key Features
-
-- **7-Day Longevity**: Every saved item is permanently deleted exactly 7 days after ingestion.
-- **AI-Powered Summarization**: Uses Ollama Cloud (GPT-OSS 120B) to generate a concise thesis and 5 key bullet points for every article.
-- **Clean Extraction**: Leverages the Jina Reader API to strip ads, trackers, and clutter, leaving only the core content.
-- **Real-time Feed**: A live-updating vertical feed with pulsing urgency indicators for items set to expire within 24 hours.
-- **Profile Management**: Track your "digital hygiene" with stats on items saved, items expired, and account longevity.
-
-## Tech Stack
-
-- **Frontend**: Next.js 16 (App Router, Server Components)
-- **Styling**: Tailwind CSS v4 (Custom Minimalist Premium Theme)
-- **UI Components**: shadcn/ui (Radix Mira style)
-- **Authentication**: Firebase Auth (Google OAuth & Email/Password)
-- **Database**: Firebase Firestore (NoSQL)
-- **Processing**: 
-  - **Scraper**: Jina Reader API (Markdown extraction)
-  - **LLM**: Ollama Cloud API (via official JavaScript library)
-- **Icons**: Lucide React / Hugeicons
+Pasted URLs are instantly transformed into high-signal, editorial-grade summaries. If you don't engage, they vanish. No archives. No clutter. Just pure focus.
 
 ---
 
-## Getting Started
+## 🌪️ The Philosophy: "Gallery, not Graveyard"
+
+Digital hoarding is a cognitive tax. Vapor solves this through **Enforced Ephemerality**:
+- **7-Day Decay**: Every item in your feed has a 7-day lease on life.
+- **Visual Decay**: A neon "Decay Bar" provides real-time feedback on how long an item has left.
+- **Summary-First**: AI-distilled summaries (Thesis + 5 Bullets) give you the core insights without the 20-minute read.
+- **Vaporization**: Read it, digest it, and manually "Vaporize" it to reclaim your mental space.
+
+---
+
+## ✨ Features
+
+- **Editorial UI**: A custom-designed OLED Dark Mode ("Ephemeral Lens") with premium typography and asymmetrical layouts.
+- **AI Ingestion Engine**:
+  - Uses **Jina Reader API** for pristine markdown extraction (no ads, no tracking).
+  - Uses **Ollama (GPT-OSS 120B)** for ruthless summarization into a structured JSON schema.
+- **Real-time Sync**: Firebase-powered live updates across devices.
+- **Productivity Dashboard**: Track your "Reading Velocity" and retention rates.
+- **PWA Ready**: Mobile-optimized with "Add to Home Screen" support.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router, React 19)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Auth & Database**: [Firebase](https://firebase.google.com/) (Auth + Firestore)
+- **AI Infrastructure**: 
+  - [Ollama Cloud](https://ollama.com/) (GPT-OSS 120B)
+  - [Jina Reader](https://jina.ai/reader/) (Markdown Ingestion)
+- **Typography**: [Geist Sans & Mono](https://vercel.com/font)
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (Latest LTS recommended)
-- Firebase Project (Auth + Firestore enabled)
-- Ollama Cloud Account & API Key
-- [Jina Reader API](https://jina.ai/reader/) access (Public or Private)
+- Node.js 20+
+- pnpm
+- Firebase Project
+- Ollama API Key
 
 ### Installation
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/iamdainwi/vapor.git
-    cd vapor
-    ```
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/iamdainwi/vapor.git
+   cd vapor
+   ```
 
-2.  **Install dependencies**:
-    ```bash
-    pnpm install
-    ```
+2. **Install dependencies**:
+   ```bash
+   pnpm install
+   ```
 
-3.  **Configure Environment**:
-    Create a `.env.local` file based on the provided template:
-    ```bash
-    cp .env.local.example .env.local
-    ```
-    Fill in your Firebase credentials, Ollama API key, and a cleanup secret.
+3. **Environment Setup**:
+   Create a `.env.local` file with the following variables:
+   ```env
+   # Firebase Client
+   NEXT_PUBLIC_FIREBASE_API_KEY=...
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+   NEXT_PUBLIC_FIREBASE_APP_ID=...
 
-4.  **Run the Development Server**:
-    ```bash
-    pnpm dev
-    ```
-    Navigate to `http://localhost:3000` to begin.
+   # Firebase Admin (Private)
+   FIREBASE_SERVICE_ACCOUNT_KEY='{"type": "service_account", ...}'
 
----
+   # AI APIs
+   OLLAMA_API_KEY=...
+   OLLAMA_URL=https://ollama.com
 
-## Configuration
+   # Security
+   CLEANUP_API_SECRET=...
+   ```
 
-### Firebase Setup
-1.  Enable **Google Auth** and **Email/Password** in the Firebase Console.
-2.  Create a **Firestore** database.
-3.  Add a **Composite Index** on the `content_items` collection:
-    - `userId`: Ascending
-    - `createdAt`: Descending
-4.  Generate a **Service Account JSON** and base64-encode it for the `FIREBASE_SERVICE_ACCOUNT_KEY` variable.
-
-### Deletion Engine
-To automate item self-destruction, schedule a `POST` request to `/api/cleanup` every hour.
-- **Header**: `Authorization: Bearer <CLEANUP_API_SECRET>`
-- **Endpoint**: `/api/cleanup`
+4. **Run the development server**:
+   ```bash
+   pnpm dev
+   ```
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
-Vapor follows a highly modular structure optimized for performance and maintainability:
-
-- **`/src/app`**: Next.js App Router structure, including authenticated route groups `(app)`.
-- **`/src/components`**: Atomic UI components and feature-specific blocks (Feed, Ingest, Profile).
-- **`/src/lib`**: Core logic including scraper integration, LLM pipelines, and Firebase SDK wrappers.
-- **`/src/api`**: Serverless functions for ingestion, manual deletion, and background cleanup.
-
----
-
-## Design Philosophy
-
-**"The Digital Forensic"**
-Vapor rejects the softness of modern web design. There are no gradients, no rounded corners, and no shadows. It uses:
-- **Zero Border Radius**: Sharp 90-degree corners on every element.
-- **High Contrast**: Pure black (`#0e0e0e`) and raw white (`#e5e2e1`).
-- **Urgency Red**: Pulse animations and harsh reds (`#ff2222`) for expiring content.
-- **Typography**: Space Grotesk and JetBrains Mono for a terminal-like readability.
+- `src/app`: Next.js App Router (Layouts, Pages, API Routes)
+- `src/components`: React components (UI atoms, Content Cards, Countdown Timers)
+- `src/lib`: Core logic (Firebase config, Ollama integration, Ingestion pipeline)
+- `src/hooks`: Global state and auth hooks
+- `src/app/api/cleanup`: Automated cron-job endpoint for self-destructing expired data.
 
 ---
 
-## License
+## 📜 License
 
-Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-Copyright © 2026 iamdainwi. Built for the era of information overload.
+Built with ⚡️ by the Vapor Labs team.

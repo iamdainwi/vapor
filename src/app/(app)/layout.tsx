@@ -44,12 +44,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           >
             Vapor
           </span>
-          <nav className="hidden sm:flex items-center gap-5">
-            <Link href="/dashboard" className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300">Feed</Link>
-            {/* <span className="text-sm text-[#f9f5f8] font-medium cursor-pointer">Archive</span> */}
-            {/* <span className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300"
+          <nav className="hidden sm:flex items-center gap-6">
+            <Link href="/dashboard" className="text-sm text-[#f9f5f8] font-medium cursor-pointer">Feed</Link>
+            <span className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300">History</span>
+            <span className="text-sm text-[#adaaad] hover:text-[#f9f5f8] cursor-pointer transition-colors ease-premium duration-300"
               onClick={() => router.push("/profile")}
-            >Settings</span> */}
+            >Settings</span>
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -58,7 +58,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <circle cx="11" cy="11" r="8" />
               <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
             </svg>
-            <span className="text-xs text-[#48474a]">Search archive...</span>
+            <span className="text-xs text-[#48474a]">Search feed...</span>
           </div>
           {/* <button
             onClick={signOut}

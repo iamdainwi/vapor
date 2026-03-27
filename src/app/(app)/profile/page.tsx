@@ -87,7 +87,7 @@ export default function ProfilePage() {
           onClick={() => router.push("/dashboard")}
           className="text-xs text-[#48474a] hover:text-[#adaaad] mb-4 block cursor-pointer transition-colors ease-premium duration-300"
         >
-          ← Back to archive
+          ← Back to feed
         </button>
         <h1 className="text-3xl font-extrabold text-[#f9f5f8] tracking-tight">Settings</h1>
       </div>

@@ -96,6 +96,7 @@ export function ContentCard({ item }: ContentCardProps) {
   }
 
   const thesis = item.summary[0] || "";
+  const bullets = item.summary.slice(1, 6);
 
   return (
     <article className="bg-[#19191c] rounded-xl p-6 hover:scale-[1.02] transition-transform ease-premium duration-300 flex flex-col">
@@ -106,33 +107,44 @@ export function ContentCard({ item }: ContentCardProps) {
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-bold text-[#f9f5f8] tracking-tight leading-snug mb-3">
+      <h3 className="text-lg font-bold text-[#f9f5f8] tracking-tight leading-snug mb-4">
         {item.title || "Untitled"}
       </h3>
 
-      {/* Summary */}
-      {thesis && (
-        <p className="text-sm text-[#adaaad] leading-relaxed mb-6 line-clamp-3">
-          {thesis}
-        </p>
-      )}
+      {/* Structured Summary */}
+      <div className="space-y-4 mb-8">
+        {thesis && (
+          <p className="text-sm font-semibold text-[#f9f5f8] leading-relaxed">
+            {thesis}
+          </p>
+        )}
+        {bullets.length > 0 && (
+          <ul className="space-y-2.5">
+            {bullets.map((bullet, idx) => (
+              <li key={idx} className="flex gap-3 text-sm text-[#adaaad] leading-relaxed">
+                <span className="text-[#ba9eff] font-bold shrink-0">•</span>
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {/* Action row */}
-      <div className="flex items-center gap-3 mt-auto mb-4">
-        <a
-          href={item.originalUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="h-9 px-5 gradient-primary text-black text-xs font-bold rounded-md hover:scale-105 cursor-pointer transition-transform ease-premium duration-300 inline-flex items-center"
-        >
-          Read Now
-        </a>
+      <div className="flex items-center mt-auto mb-4">
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className="text-sm text-[#adaaad] hover:text-red-400 cursor-pointer transition-colors ease-premium duration-300"
+          className="h-10 px-6 gradient-primary text-black text-xs font-bold rounded-md hover:scale-105 cursor-pointer transition-transform ease-premium duration-300 inline-flex items-center gap-2"
         >
-          {isDeleting ? "..." : "Remove"}
+          {isDeleting ? (
+            <div className="w-3 h-3 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+          {isDeleting ? "Vaporizing..." : "Vaporize Early"}
         </button>
       </div>
 

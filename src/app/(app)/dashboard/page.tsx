@@ -81,11 +81,11 @@ export default function ArchivePage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-[#f9f5f8] tracking-tight">
-              Archive
+              Feed
             </h1>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#19191c] rounded-full">
               <div className="w-2 h-2 rounded-full bg-[#ba9eff] animate-pulse" />
-              <span className="text-xs text-[#adaaad] font-medium tracking-wider uppercase">Active Sync</span>
+              <span className="text-xs text-[#adaaad] font-medium tracking-wider uppercase">Live Sync</span>
             </div>
           </div>
           <p className="text-sm text-[#adaaad] leading-relaxed">
