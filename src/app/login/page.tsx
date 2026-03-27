@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
 
@@ -13,9 +13,18 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (!loading && user) {
-    router.push("/dashboard");
-    return null;
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
+
+  if (loading || user) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-[#0e0e10]">
+        <div className="w-5 h-5 border-2 border-[#ba9eff]/30 border-t-[#ba9eff] rounded-full animate-spin" />
+      </div>
+    );
   }
 
   const handleEmailSignIn = async () => {
